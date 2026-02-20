@@ -3,25 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Vulkane - von Aman Jangra </title>
+    <title>Fachvortrag: Vulkanismus | Geowissenschaften</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --lava: #ff4d00; --magma: #3d0000; }
-        body { font-family: 'Outfit', sans-serif; background-color: #050505; color: #f3f4f6; -webkit-tap-highlight-color: transparent; }
+        :root { --accent: #c2410c; --bg: #0a0a0a; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: #f3f4f6; -webkit-tap-highlight-color: transparent; line-height: 1.6; }
         
-        /* Präsentations-Stile */
-        .present-mode .content-section { opacity: 0.15; filter: blur(4px); transition: all 0.8s ease; transform: scale(0.95); }
-        .present-mode .content-section.active { opacity: 1; filter: blur(0); transform: scale(1.02); }
+        /* Präsentations-Fokus */
+        .present-mode .content-section { opacity: 0.1; filter: grayscale(100%) blur(2px); transition: all 1s ease; transform: scale(0.98); }
+        .present-mode .content-section.active { opacity: 1; filter: grayscale(0%) blur(0); transform: scale(1); border-left: 4px solid var(--accent); padding-left: 2rem; }
         
-        .lava-border { border-left: 4px solid var(--lava); }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        #progress-bar { height: 5px; background: linear-gradient(90deg, #7c2d12, #ea580c); width: 0%; position: fixed; top: 0; z-index: 1000; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         
-        /* Fortschrittsbalken oben */
-        #progress-bar { height: 4px; background: var(--lava); width: 0%; transition: width 0.3s; position: fixed; top: 0; z-index: 1000; }
-        
-        .touch-btn { touch-action: manipulation; }
-        .highlight-box { background: linear-gradient(90deg, rgba(255,77,0,0.1) 0%, transparent 100%); padding: 1rem; border-radius: 1rem; }
+        .term-highlight { color: #fb923c; font-weight: 600; border-bottom: 1px dashed #7c2d12; }
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
     </style>
 </head>
 <body class="overflow-x-hidden">
@@ -29,145 +26,125 @@
     <div id="progress-bar"></div>
 
     <div id="controls" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[200] flex items-center gap-4">
-        <button onclick="prevStep()" class="touch-btn glass p-4 rounded-full text-white hover:bg-orange-600 transition hidden pres-nav">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        <button onclick="prevStep()" class="touch-btn glass p-5 rounded-2xl text-white hover:bg-stone-800 transition hidden pres-nav shadow-2xl">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
         </button>
         
-        <button id="mainAction" onclick="togglePresentation()" class="touch-btn bg-orange-600 text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest shadow-2xl flex items-center gap-3 active:scale-95 transition-all">
-            <span id="btnIcon">▶</span> <span id="btnText">Vortrag starten</span>
+        <button id="mainAction" onclick="togglePresentation()" class="touch-btn bg-orange-700 text-white px-10 py-5 rounded-2xl font-bold uppercase tracking-widest shadow-[0_10px_40px_rgba(0,0,0,0.5)] active:scale-95 transition-all flex items-center gap-3">
+            <span id="btnIcon">▶</span> <span id="btnText">Präsentation starten</span>
         </button>
 
-        <button onclick="nextStep()" class="touch-btn glass p-4 rounded-full text-white hover:bg-orange-600 transition hidden pres-nav">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        <button onclick="nextStep()" class="touch-btn glass p-5 rounded-2xl text-white hover:bg-stone-800 transition hidden pres-nav shadow-2xl">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
         </button>
     </div>
 
-    <nav class="p-6 flex justify-between items-center relative z-50">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-orange-600 rounded-xl flex items-center justify-center font-black italic">V</div>
-            <div class="leading-none">
-                <span class="block text-xl font-black">ShadowChat</span>
-                <span class="text-[10px] text-gray-500 tracking-widest uppercase">amancreatecode.shadowchat.com</span>
+    <nav class="p-8 flex justify-between items-center border-b border-white/5">
+        <div class="flex items-center gap-4">
+            <img src="icon.png" alt="" class="w-10 h-10 rounded-lg shadow-lg" onerror="this.style.display='none'">
+            <div>
+                <span class="block text-2xl font-extrabold tracking-tight">Geowissenschaftliches <span class="text-orange-600">Dossier</span></span>
+                <span class="text-[10px] text-stone-500 tracking-[0.3em] uppercase">Akademische Präsentation | 2026</span>
             </div>
         </div>
-        <div class="hidden md:block text-sm font-mono text-orange-500">2026 GEOGRAPHY PROJECT</div>
     </nav>
 
-    <main class="max-w-4xl mx-auto px-6 pb-40">
+    <main class="max-w-5xl mx-auto px-8 pb-60">
         
-        <section id="sec0" class="content-section min-h-[70vh] flex flex-col justify-center py-20">
-            <h1 class="text-7xl md:text-9xl font-black mb-8 leading-[0.9]">FEUER AUS DER <span class="text-orange-600">TIEFE</span></h1>
-            <p class="text-2xl text-gray-400 font-light leading-relaxed read-text">
-                Willkommen zu meiner Präsentation. Heute schauen wir uns an, warum unser Planet eigentlich so heißblütig ist und was passiert, wenn die Erde mal so richtig Dampf ablässt.
+        <section id="sec0" class="content-section min-h-[80vh] flex flex-col justify-center py-20">
+            <h1 class="text-6xl md:text-8xl font-black mb-10 leading-tight">Endogener Prozess:<br><span class="text-orange-700">Vulkanismus</span></h1>
+            <p class="text-2xl text-stone-400 font-light max-w-3xl read-text">
+                Diese Präsentation analysiert die geologischen Mechanismen des Vulkanismus, die Klassifizierung von Eruptionstypen und deren sozioökonomische Auswirkungen auf den Planeten Erde.
             </p>
         </section>
 
-        <section id="sec1" class="content-section py-20">
-            <h2 class="text-4xl font-black mb-10 flex items-center gap-4">
-                <span class="text-orange-600 text-6xl">01</span> Was ist ein Vulkan?
-            </h2>
-            <div class="space-y-6 text-xl text-gray-300 leading-relaxed read-text">
-                <p class="highlight-box">
-                    Stell dir die Erde wie eine Orange vor. Die Schale ist der Boden, auf dem wir stehen. Aber unter dieser Schale ist alles flüssig und verdammt heiß.
-                </p>
+        <section id="sec1" class="content-section py-24">
+            <h2 class="text-4xl font-bold mb-12 border-b border-orange-900/30 pb-4">1. Definition und Ursprung</h2>
+            <div class="space-y-8 text-xl text-stone-300 read-text">
                 <p>
-                    Ein Vulkan ist im Grunde nichts anderes als eine <span class="text-orange-500 font-bold underline">Schwachstelle</span> in dieser Schale. Dort drückt das flüssige Gestein nach oben, weil es leichter ist als der kalte Stein drumherum. 
+                    Vulkanismus bezeichnet alle geologischen Vorgänge, die mit dem Aufstieg von <span class="term-highlight">Magma</span> aus dem Erdmantel zur Erdoberfläche verbunden sind. Dieser Prozess ist ein entscheidendes Ventil für den inneren <span class="term-highlight">Wärmehaushalt</span> der Erde.
                 </p>
-                <p>
-                    Wenn dieses Zeug noch unten ist, nennen wir es <strong>Magma</strong>. Sobald es oben "Hallo" sagt und ausbricht, nennen wir es <strong>Lava</strong>. Eigentlich ganz einfach, oder?
-                </p>
+                <div class="glass p-10 rounded-[2rem] border-l-4 border-orange-700">
+                    <h3 class="text-white font-bold mb-4">Magmatogenese</h3>
+                    <p class="text-stone-400">
+                        Das Magma entsteht durch Teilaufschmelzung des Mantelgesteins (Peridotit). Entscheidende Faktoren sind hierbei die Druckentlastung, die Zufuhr von Fluiden (z. B. Wasser in Subduktionszonen) oder thermische Anomalien.
+                    </p>
+                </div>
             </div>
         </section>
 
-        
-
-        <section id="sec2" class="content-section py-20">
-            <h2 class="text-4xl font-black mb-10 flex items-center gap-4">
-                <span class="text-orange-600 text-6xl">02</span> Warum bricht die Erde auf?
-            </h2>
-            <div class="grid md:grid-cols-2 gap-8 read-text">
-                <div class="glass p-8 rounded-[2rem] lava-border">
-                    <h3 class="text-2xl font-bold mb-4 text-orange-400">Das Platten-Puzzle</h3>
-                    <p class="text-gray-400">Unsere Erdkruste besteht aus riesigen Platten, die auf dem weichen Kern schwimmen. Wenn diese Platten gegeneinander knallen oder auseinanderreißen, entstehen Vulkane.</p>
+        <section id="sec2" class="content-section py-24">
+            <h2 class="text-4xl font-bold mb-12 border-b border-orange-900/30 pb-4">2. Tektonische Rahmenbedingungen</h2>
+            <div class="info-grid read-text">
+                <div class="glass p-8 rounded-3xl">
+                    <h4 class="text-orange-500 font-bold mb-3 uppercase tracking-wider text-sm">Divergierende Grenzen</h4>
+                    <p class="text-stone-400">An mittelozeanischen Rücken driften Lithosphärenplatten auseinander. Magma steigt passiv auf und bildet neue Erdkruste.</p>
                 </div>
-                <div class="glass p-8 rounded-[2rem] border-l-4 border-blue-500">
-                    <h3 class="text-2xl font-bold mb-4 text-blue-400">Der "Ring of Fire"</h3>
-                    <p class="text-gray-400">Rund um den Pazifik gibt es eine Zone, in der es fast ununterbrochen kracht. Hier liegen die meisten gefährlichen Vulkane der Welt, weil dort die Platten besonders aktiv sind.</p>
+                <div class="glass p-8 rounded-3xl">
+                    <h4 class="text-orange-500 font-bold mb-3 uppercase tracking-wider text-sm">Konvergierende Grenzen</h4>
+                    <p class="text-stone-400">In Subduktionszonen wird eine Platte unter die andere gedrückt. Dies führt zu fluidinduziertem Schmelzen und hochexplosivem Vulkanismus.</p>
+                </div>
+                <div class="glass p-8 rounded-3xl">
+                    <h4 class="text-orange-500 font-bold mb-3 uppercase tracking-wider text-sm">Intraplattenvulkanismus</h4>
+                    <p class="text-stone-400">Sogenannte Mantle Plumes oder Hotspots verursachen Vulkanismus fernab von Plattengrenzen, wie am Beispiel von Hawaii ersichtlich.</p>
                 </div>
             </div>
-            <p class="mt-8 text-xl text-gray-500 italic read-text">
-                Es gibt aber auch "Hotspots". Da ist der Vulkan mitten auf einer Platte, weil es darunter so heiß ist, dass sich das Magma wie ein Schweißbrenner durch den Boden schmilzt. So ist zum Beispiel Hawaii entstanden.
-            </p>
         </section>
 
-        <section id="sec3" class="content-section py-20">
-            <h2 class="text-4xl font-black mb-10 flex items-center gap-4">
-                <span class="text-orange-600 text-6xl">03</span> Die verschiedenen Typen
-            </h2>
+        <section id="sec3" class="content-section py-24">
+            <h2 class="text-4xl font-bold mb-12 border-b border-orange-900/30 pb-4">3. Klassifizierung der Eruptionsformen</h2>
             <div class="space-y-12 read-text">
-                <div class="flex flex-col md:flex-row gap-8 items-start">
-                    <div class="bg-stone-900 p-1 rounded-2xl w-full md:w-1/3 text-center py-10 text-5xl">🌋</div>
-                    <div>
-                        <h4 class="text-2xl font-bold text-white mb-2">Der Schichtvulkan (Der Gefährliche)</h4>
-                        <p class="text-gray-400 text-lg">Das ist der klassische Vulkan, den jeder aus Filmen kennt: spitz und hoch. Er ist so gefährlich, weil seine Lava zähflüssig ist wie Zahnpasta. Sie verstopft den Berg, bis er irgendwann mit einer gigantischen Explosion platzt.</p>
+                <div class="flex flex-col md:flex-row gap-10">
+                    <div class="w-full md:w-1/2">
+                        <h4 class="text-2xl font-bold text-white mb-4">Effusiver Vulkanismus</h4>
+                        <p class="text-stone-400 mb-4">Charakterisiert durch dünnflüssige, basaltische Lava mit geringem Gasgehalt. Dies führt zur Bildung von weitflächigen <span class="term-highlight">Schildvulkanen</span>.</p>
+                        <ul class="text-sm text-stone-500 space-y-1">
+                            <li>• Geringe Viskosität</li>
+                            <li>• Hohe Temperaturen (>1100°C)</li>
+                            <li>• Beispiel: Mauna Loa</li>
+                        </ul>
+                    </div>
+                    <div class="w-full md:w-1/2">
+                        <h4 class="text-2xl font-bold text-white mb-4">Explosiver Vulkanismus</h4>
+                        <p class="text-stone-400 mb-4">Zähflüssiges Magma mit hohem Kieselsäuregehalt verhindert das Entweichen von Gasen, bis der Innendruck die Gesteinslast übersteigt. Resultat sind <span class="term-highlight">Schichtvulkane</span>.</p>
+                        <ul class="text-sm text-stone-500 space-y-1">
+                            <li>• Hohe Viskosität</li>
+                            <li>• Plinianische Eruptionen</li>
+                            <li>• Beispiel: Mount St. Helens</li>
+                        </ul>
                     </div>
                 </div>
-                <div class="flex flex-col md:flex-row gap-8 items-start">
-                    <div class="bg-stone-900 p-1 rounded-2xl w-full md:w-1/3 text-center py-10 text-5xl">🥞</div>
-                    <div>
-                        <h4 class="text-2xl font-bold text-white mb-2">Der Schildvulkan (Der Sanfte)</h4>
-                        <p class="text-gray-400 text-lg">Er ist ganz flach und breit. Seine Lava ist dünnflüssig wie Wasser. Sie fließt einfach ganz entspannt den Hang hinunter. Man kann meistens fast daneben stehen bleiben, ohne dass es knallt.</p>
-                    </div>
+            </div>
+        </section>
+
+        <section id="sec4" class="content-section py-24">
+            <h2 class="text-4xl font-bold mb-12 border-b border-orange-900/30 pb-4">4. Gefahrenanalyse und Prävention</h2>
+            <div class="grid md:grid-cols-2 gap-8 read-text">
+                <div class="bg-red-950/10 p-8 rounded-[2rem] border border-red-900/20">
+                    <h4 class="font-bold text-red-500 mb-4 uppercase">Primärgefahren</h4>
+                    <p class="text-stone-400 text-sm">Dazu zählen pyroklastische Dichteströme, Tephra-Fallout und Lavaströme. Pyroklastische Ströme erreichen Geschwindigkeiten von über 150 km/h und Temperaturen von bis zu 800°C.</p>
+                </div>
+                <div class="bg-blue-950/10 p-8 rounded-[2rem] border border-blue-900/20">
+                    <h4 class="font-bold text-blue-500 mb-4 uppercase">Sekundärgefahren</h4>
+                    <p class="text-stone-400 text-sm">Lahare (vulkanische Schlammströme), Tsunamis und klimatische Veränderungen durch Aerosole in der Stratosphäre stellen langfristige Risiken dar.</p>
                 </div>
             </div>
         </section>
 
-        <section id="sec4" class="content-section py-20">
-            <h2 class="text-4xl font-black mb-10 flex items-center gap-4">
-                <span class="text-orange-600 text-6xl">04</span> Giganten der Geschichte
-            </h2>
-            <div class="glass p-10 rounded-[3rem] space-y-8 read-text">
-                <div>
-                    <h4 class="text-xl font-bold text-orange-500 mb-2 underline">Pompeji (Vesuv, 79 n. Chr.)</h4>
-                    <p class="text-gray-400 text-lg">Der Vesuv hat eine ganze Stadt unter Asche begraben. Das Krasseste: Die Menschen wurden quasi "eingefroren" und man kann ihre Abdrücke heute noch sehen.</p>
-                </div>
-                <div>
-                    <h4 class="text-xl font-bold text-orange-500 mb-2 underline">Yellowstone (Der Supervulkan)</h4>
-                    <p class="text-gray-400 text-lg">Unter dem berühmten US-Nationalpark schlummert ein Monster. Wenn dieser Vulkan ausbricht, wäre das kein normaler Ausbruch – die ganze Welt würde sich verdunkeln, weil so viel Asche in die Luft fliegt.</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="sec5" class="content-section py-20">
-            <h2 class="text-4xl font-black mb-10 flex items-center gap-4">
-                <span class="text-orange-600 text-6xl">05</span> Fluch oder Segen?
-            </h2>
-            <div class="grid md:grid-cols-2 gap-10 read-text">
-                <div class="space-y-4">
-                    <h4 class="text-red-500 font-bold text-2xl">Die Gefahr</h4>
-                    <p class="text-gray-400">Heiße Aschewolken (pyroklastische Ströme), die schneller sind als ein Rennwagen, und Schlammlawinen, die alles mitreißen.</p>
-                </div>
-                <div class="space-y-4">
-                    <h4 class="text-green-500 font-bold text-2xl">Der Nutzen</h4>
-                    <p class="text-gray-400">Vulkane machen den Boden super fruchtbar. Außerdem können wir mit der Hitze aus der Erde (Geothermie) ganze Städte heizen, ohne CO2 auszustoßen.</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="sec6" class="content-section py-32">
-            <div id="quiz-container" class="bg-white text-black p-10 md:p-16 rounded-[4rem] shadow-[0_0_100px_rgba(255,77,0,0.4)]">
-                <h2 class="text-5xl font-black mb-4">WISSENSTEST</h2>
-                <p class="mb-10 text-gray-500 font-medium italic">Mal sehen, ob du im Unterricht geschlafen hast...</p>
+        <section id="sec5" class="content-section py-32">
+            <div id="quiz-container" class="glass p-12 md:p-20 rounded-[4rem] shadow-2xl">
+                <h2 class="text-4xl font-black mb-4">LEISTUNGSKONTROLLE</h2>
+                <p class="mb-12 text-stone-500">Überprüfung der Lerninhalte zum Thema Vulkanismus.</p>
                 
                 <div id="quiz-body">
-                    <div id="q-text" class="text-3xl font-bold mb-10 leading-tight">Bist du bereit für das Quiz?</div>
+                    <div id="q-text" class="text-3xl font-bold mb-10 leading-tight">Möchten Sie das Wissensquiz starten?</div>
                     <div id="q-options" class="grid gap-4">
-                        <button onclick="startQuiz()" class="bg-black text-white p-6 rounded-2xl font-bold text-xl active:scale-95 transition">Ja, leg los!</button>
+                        <button onclick="startQuiz()" class="bg-orange-700 text-white p-6 rounded-2xl font-bold text-xl active:scale-95 transition">Test starten</button>
                     </div>
                 </div>
                 <div id="q-progress-container" class="mt-12 hidden">
-                    <div class="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
-                        <div id="q-progress-bar" class="bg-orange-600 h-full w-0 transition-all duration-500"></div>
+                    <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
+                        <div id="q-progress-bar" class="bg-orange-600 h-full w-0 transition-all duration-700"></div>
                     </div>
                 </div>
             </div>
@@ -176,19 +153,16 @@
     </main>
 
     <script>
-        // --- KONFIGURATION & STATE ---
         let isPresenting = false;
         let currentStep = -1;
         const sections = document.querySelectorAll('.content-section');
         const synth = window.speechSynthesis;
-        let currentUtterance = null;
 
-        // --- PRÄSENTATIONS LOGIK ---
         function togglePresentation() {
             if (!isPresenting) {
                 isPresenting = true;
                 document.body.classList.add('present-mode');
-                document.getElementById('btnText').innerText = "Vortrag stoppen";
+                document.getElementById('btnText').innerText = "Vortrag beenden";
                 document.getElementById('btnIcon').innerText = "⏹";
                 document.querySelectorAll('.pres-nav').forEach(el => el.classList.remove('hidden'));
                 nextStep();
@@ -200,13 +174,13 @@
         function stopPresentation() {
             isPresenting = false;
             document.body.classList.remove('present-mode');
-            document.getElementById('btnText').innerText = "Vortrag starten";
+            document.getElementById('btnText').innerText = "Präsentation starten";
             document.getElementById('btnIcon').innerText = "▶";
             document.querySelectorAll('.pres-nav').forEach(el => el.classList.add('hidden'));
             synth.cancel();
             sections.forEach(s => s.classList.remove('active'));
             currentStep = -1;
-            updateProgress(0);
+            document.getElementById('progress-bar').style.width = '0%';
         }
 
         function nextStep() {
@@ -227,48 +201,43 @@
 
         function runStep() {
             synth.cancel();
-            sections.forEach((s, i) => {
-                s.classList.toggle('active', i === currentStep);
-            });
+            sections.forEach((s, i) => { s.classList.toggle('active', i === currentStep); });
 
             const activeSection = sections[currentStep];
             activeSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
             
-            // Fortschrittsbalken aktualisieren
             const prog = ((currentStep + 1) / sections.length) * 100;
-            updateProgress(prog);
+            document.getElementById('progress-bar').style.width = prog + '%';
 
-            // Text finden und vorlesen
             const textToRead = Array.from(activeSection.querySelectorAll('.read-text'))
-                .map(p => p.innerText)
-                .join(' ');
+                .map(p => p.innerText).join(' ');
 
             if (textToRead) {
-                currentUtterance = new SpeechSynthesisUtterance(textToRead);
-                currentUtterance.lang = 'de-DE';
-                currentUtterance.rate = 0.9;
-                currentUtterance.pitch = 1.0;
+                const utterance = new SpeechSynthesisUtterance(textToRead);
                 
-                currentUtterance.onend = () => {
-                    // Optional: Auto-Weiter nach Pause
-                    // setTimeout(nextStep, 3000); 
-                };
-                synth.speak(currentUtterance);
+                // Optimierung der Stimme
+                const voices = synth.getVoices();
+                // Versuche eine deutsche Premium-Stimme zu finden (z.B. "Anna" oder "Google Deutsch")
+                const preferredVoice = voices.find(v => v.lang.startsWith('de') && v.name.includes('Premium')) || 
+                                      voices.find(v => v.lang.startsWith('de'));
+                
+                if(preferredVoice) utterance.voice = preferredVoice;
+                
+                utterance.lang = 'de-DE';
+                utterance.rate = 0.92; // Etwas langsamer für bessere Verständlichkeit
+                utterance.pitch = 0.95; // Etwas tiefer für seriöseren Klang
+                
+                synth.speak(utterance);
             }
         }
 
-        function updateProgress(val) {
-            document.getElementById('progress-bar').style.width = val + '%';
-        }
-
-        // --- QUIZ DATEN ---
+        // Quiz-System
         const quizData = [
-            { q: "Was ist Magma?", o: ["Flüssiges Gestein oben", "Flüssiges Gestein unten", "Asche"], a: 1 },
-            { q: "Wo liegen die meisten Vulkane?", o: ["In der Wüste", "Am Ring of Fire", "In Deutschland"], a: 1 },
-            { q: "Welcher Vulkan ist explosiver?", o: ["Schildvulkan", "Schichtvulkan", "Garten-Vulkan"], a: 1 },
-            { q: "Was ist Geothermie?", o: ["Erdbeben-Angst", "Wärme aus der Tiefe", "Lava-Eis"], a: 1 },
-            { q: "Wie hieß die Stadt beim Vesuv?", o: ["Rom", "Berlin", "Pompeji"], a: 2 },
-            { q: "Was macht Vulkanerde so besonders?", o: ["Sie leuchtet", "Sie ist sehr fruchtbar", "Sie schmeckt gut"], a: 1 }
+            { q: "Wie nennt man Magma nach dem Austritt an der Oberfläche?", o: ["Tephra", "Lava", "Bimsstein"], a: 1 },
+            { q: "Welcher Faktor bestimmt primär die Explosivität einer Eruption?", o: ["Wassertiefe", "Kieselsäuregehalt/Viskosität", "Luftdruck"], a: 1 },
+            { q: "Was kennzeichnet einen Schildvulkan?", o: ["Steile Hänge", "Zähflüssige Lava", "Dünnflüssige, basaltische Lava"], a: 2 },
+            { q: "An welchen Grenzen entsteht neue Erdkruste?", o: ["Subduktionszonen", "Divergierende Grenzen", "Transformstörungen"], a: 1 },
+            { q: "Welches Phänomen zählt zu den Sekundärgefahren?", o: ["Pyroklastischer Strom", "Lahar (Schlammstrom)", "Lava-Fontäne"], a: 1 }
         ];
 
         let qIdx = 0;
@@ -282,18 +251,18 @@
 
         function showQuestion() {
             const data = quizData[qIdx];
-            const body = document.getElementById('q-body');
+            const body = document.getElementById('quiz-body');
             const prog = ((qIdx) / quizData.length) * 100;
             document.getElementById('q-progress-bar').style.width = prog + '%';
 
             let optionsHtml = '';
             data.o.forEach((opt, i) => {
-                optionsHtml += `<button onclick="answer(${i})" class="w-full text-left p-6 border-2 border-black rounded-2xl font-bold text-xl hover:bg-orange-600 hover:text-white transition active:scale-95 touch-btn">${opt}</button>`;
+                optionsHtml += `<button onclick="answer(${i})" class="w-full text-left p-6 border border-white/10 rounded-2xl font-bold text-lg hover:bg-orange-800 hover:text-white transition active:scale-95 shadow-lg">${opt}</button>`;
             });
 
             body.innerHTML = `
-                <div class="text-sm font-black text-orange-600 mb-2 uppercase tracking-widest">Frage ${qIdx + 1} von ${quizData.length}</div>
-                <div class="text-3xl font-bold mb-10 leading-tight">${data.q}</div>
+                <div class="text-xs font-bold text-stone-500 mb-4 uppercase tracking-[0.3em]">Frage ${qIdx + 1} / ${quizData.length}</div>
+                <div class="text-2xl font-bold mb-10 leading-snug">${data.q}</div>
                 <div class="grid gap-4">${optionsHtml}</div>
             `;
         }
@@ -301,27 +270,27 @@
         function answer(idx) {
             if (idx === quizData[qIdx].a) score++;
             qIdx++;
-            if (qIdx < quizData.length) {
-                showQuestion();
-            } else {
-                showResult();
-            }
+            if (qIdx < quizData.length) showQuestion();
+            else showResult();
         }
 
         function showResult() {
-            const body = document.getElementById('q-body');
+            const body = document.getElementById('quiz-body');
             document.getElementById('q-progress-bar').style.width = '100%';
             const perc = Math.round((score / quizData.length) * 100);
             
             body.innerHTML = `
-                <div class="text-center">
-                    <div class="text-8xl mb-6">🌋</div>
-                    <div class="text-4xl font-black mb-4 uppercase">Ergebnis: ${perc}%</div>
-                    <p class="text-xl text-gray-600 mb-10">Du hast ${score} von ${quizData.length} Punkten erreicht!</p>
-                    <button onclick="location.reload()" class="bg-black text-white px-10 py-5 rounded-full font-bold uppercase tracking-widest">Präsentation beenden</button>
+                <div class="text-center py-10">
+                    <div class="text-6xl mb-8">📊</div>
+                    <div class="text-4xl font-black mb-4 uppercase tracking-tighter">Ergebnis: ${perc}%</div>
+                    <p class="text-xl text-stone-400 mb-12">Sie haben ${score} von ${quizData.length} Fragen korrekt beantwortet.</p>
+                    <button onclick="location.reload()" class="bg-white text-black px-12 py-5 rounded-full font-bold uppercase tracking-widest hover:bg-orange-600 hover:text-white transition shadow-2xl">Abschließen</button>
                 </div>
             `;
         }
+
+        // Sprach-Engine Initialisierung für iPad
+        window.speechSynthesis.getVoices();
     </script>
 </body>
 </html>
