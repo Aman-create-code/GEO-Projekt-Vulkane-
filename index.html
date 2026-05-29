@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="de" class="scroll-smooth">
 <head>
@@ -7,177 +8,266 @@
     <script src="https://cdn.tailwindcss.com"></script> 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --accent: #c2410c; --bg: #0a0a0a; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: #f3f4f6; -webkit-tap-highlight-color: transparent; line-height: 1.6; }
+        :root { 
+            --accent: #ea580c; 
+            --bg: #09090b; 
+        }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg); 
+            color: #e4e4e7; 
+            -webkit-tap-highlight-color: transparent; 
+            line-height: 1.7; 
+        }
         
-        /* Präsentations-Fokus */
-        .present-mode .content-section { opacity: 0.1; filter: grayscale(100%) blur(2px); transition: all 1s ease; transform: scale(0.98); }
-        .present-mode .content-section.active { opacity: 1; filter: grayscale(0%) blur(0); transform: scale(1); border-left: 4px solid var(--accent); padding-left: 2rem; }
+        /* Modernisierter Präsentations-Fokus */
+        .content-section {
+            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .present-mode .content-section { 
+            opacity: 0.05; 
+            filter: grayscale(80%) blur(8px); 
+            transform: scale(0.95); 
+            pointer-events: none; 
+        }
+        .present-mode .content-section.active { 
+            opacity: 1; 
+            filter: grayscale(0%) blur(0); 
+            transform: scale(1); 
+            pointer-events: auto;
+            border-left: 4px solid var(--accent); 
+            padding-left: 2rem; 
+        }
         
-        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        #progress-bar { height: 5px; background: linear-gradient(90deg, #7c2d12, #ea580c); width: 0%; position: fixed; top: 0; z-index: 1000; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        /* Glassmorphismus-Effekt */
+        .glass { 
+            background: rgba(255, 255, 255, 0.03); 
+            backdrop-filter: blur(24px); 
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
         
-        .term-highlight { color: #fb923c; font-weight: 600; border-bottom: 1px dashed #7c2d12; }
-        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+        #progress-bar { 
+            height: 4px; 
+            background: linear-gradient(90deg, #ea580c, #f97316, #fb923c); 
+            width: 0%; 
+            position: fixed; 
+            top: 0; 
+            left: 0;
+            z-index: 1000; 
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+        
+        .term-highlight { 
+            color: #fb923c; 
+            font-weight: 600; 
+        }
+        
+        /* Sanftes Scrollen verbergen für saubere Optik */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #52525b; }
     </style>
 </head>
-<body class="overflow-x-hidden">
+<body class="overflow-x-hidden selection:bg-orange-500/30 selection:text-orange-200">
 
     <div id="progress-bar"></div>
 
     <div id="controls" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[200] flex items-center gap-4">
-        <button onclick="prevStep()" class="touch-btn glass p-5 rounded-2xl text-white hover:bg-stone-800 transition hidden pres-nav shadow-2xl">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        <button onclick="prevStep()" class="touch-btn glass p-4 rounded-full text-white hover:bg-white/10 transition hidden pres-nav shadow-2xl backdrop-blur-md">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
         </button>
         
-        <button id="mainAction" onclick="togglePresentation()" class="touch-btn bg-orange-700 text-white px-10 py-5 rounded-2xl font-bold uppercase tracking-widest shadow-[0_10px_40px_rgba(0,0,0,0.5)] active:scale-95 transition-all flex items-center gap-3">
-            <span id="btnIcon">▶</span> <span id="btnText">Präsentation starten</span>
+        <button id="mainAction" onclick="togglePresentation()" class="touch-btn bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white px-8 py-4 rounded-full font-bold uppercase tracking-wider shadow-[0_8px_30px_rgba(234,88,12,0.3)] active:scale-95 transition-all flex items-center gap-3 border border-orange-400/30">
+            <span id="btnIcon" class="text-xl">▶</span> <span id="btnText">Präsentation starten</span>
         </button>
 
-        <button onclick="nextStep()" class="touch-btn glass p-5 rounded-2xl text-white hover:bg-stone-800 transition hidden pres-nav shadow-2xl">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        <button onclick="nextStep()" class="touch-btn glass p-4 rounded-full text-white hover:bg-white/10 transition hidden pres-nav shadow-2xl backdrop-blur-md">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
         </button>
     </div>
 
-    <nav class="p-8 flex justify-between items-center border-b border-white/5">
+    <nav class="p-6 md:p-8 flex justify-between items-center border-b border-white/5 bg-black/20 backdrop-blur-xl sticky top-0 z-50">
         <div class="flex items-center gap-4">
-            <img src="icon.png" alt="" class="w-10 h-10 rounded-lg shadow-lg" onerror="this.style.display='none'">
+            <img src="icon.png" alt="" class="w-10 h-10 rounded-xl shadow-lg border border-white/10" onerror="this.style.display='none'">
             <div>
-                <span class="block text-2xl font-extrabold tracking-tight">Projekt  <span class="text-orange-600">Vulkane</span></span>
-                <span class="text-[10px] text-stone-500 tracking-[0.3em] uppercase">Geo Präsentation | 2026</span>
+                <span class="block text-xl md:text-2xl font-extrabold tracking-tight">Projekt <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-300">Vulkane</span></span>
+                <span class="text-[10px] text-zinc-500 tracking-[0.3em] uppercase font-semibold">Geo Präsentation | 2026</span>
             </div>
         </div>
     </nav>
 
-    <main class="max-w-5xl mx-auto px-8 pb-60">
+    <main class="max-w-6xl mx-auto px-6 md:px-12 pb-60">
         
         <section id="sec0" class="content-section min-h-[80vh] flex flex-col justify-center py-20">
-            <h1 class="text-6xl md:text-8xl font-black mb-10 leading-tight"> <br><span class="text-orange-700">Vulkanismus</span></h1>
-            <p class="text-2xl text-stone-400 font-light max-w-3xl read-text">
-                Diese Präsentation  erklärt den Allgemeinen Vulkanismus und die Funktionen und Aufbau verschiedener Vulkanarten.
-                
-            <p>
+            <h1 class="text-5xl md:text-8xl font-black mb-8 leading-tight tracking-tighter"> 
+                <br><span class="text-transparent bg-clip-text bg-gradient-to-br from-orange-500 via-orange-600 to-red-600">Vulkanismus</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-zinc-400 font-light max-w-3xl leading-relaxed">
+                Diese Präsentation erklärt den Allgemeinen Vulkanismus und die Funktionen und Aufbau verschiedener Vulkanarten.
+            </p>
         </section>
 
-        <section id="sec1" class="content-section py-24">
-            <h2 class="text-4xl font-bold mb-12 border-b border-orange-900/30 pb-4">Inhaltsverzeichnis :</h2>
-            <div class="space-y-8 text-xl text-stone-300 read-text">
+        <section id="sec1" class="content-section py-20">
+            <h2 class="text-3xl md:text-4xl font-bold mb-10 border-b border-white/10 pb-6 flex items-center gap-4">Inhaltsverzeichnis :</h2>
+            <div class="space-y-8 text-lg md:text-xl text-zinc-300">
                 <p>
-                    Die Präsentation ist so <span class="term-highlight">aufgebaut</span>  <span class="term-highlight">:</span>
+                    Die Präsentation ist so <span class="term-highlight">aufgebaut</span> <span class="term-highlight">:</span>
                 </p>
-                <div class="glass p-10 rounded-[2rem] border-l-4 border-orange-700">
-                    <h3 class="text-white font-bold mb-4">Aufbau :</h3>
-                    <p class="text-stone-400">
-                        • 1. Allgemein  Vulkanismus <br> • 2. Vulkanarten <br> • 3. Schildvulkane & Schichtvulkan <br> • 4. Auswirkung auf Menschen 
+                <div class="glass p-8 md:p-10 rounded-3xl border-l-4 border-l-orange-500 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 blur-[80px] rounded-full"></div>
+                    <h3 class="text-white font-bold mb-6 text-2xl">Aufbau :</h3>
+                    <p class="text-zinc-400 leading-loose">
+                        • 1. Allgemein Vulkanismus <br> 
+                        • 2. Vulkanarten <br> 
+                        • 3. Schildvulkane & Schichtvulkan <br> 
+                        • 4. Auswirkung auf Menschen 
                     </p>
                 </div>
             </div>
         </section>
 
-        <section id="sec2" class="content-section py-24">
-            <h2 class="text-4xl font-bold mb-12 border-b border-orange-900/30 pb-4">1. Vulkanismus  </h2>
-            <div class="info-grid read-text">
-                <div class="glass p-8 rounded-3xl">
-                    <h4 class="text-orange-500 font-bold mb-3 uppercase tracking-wider text-sm">1.1 Definition Vulkane </h4>
-                    <br><img src="3.jpeg" alt="Aufbau eines Vulkans"
-     class="w-full h-48 object-cover rounded-xl mb-4 shadow-lg">
-                    <p class="text-stone-400">Ein Vulkan ist eine Öffnung in der Erdkruste, durch die Magma (nach dem Austreten Lava genannt), Gase und Asche aus dem Erdinneren an die Oberfläche gelangen.</p>
+        <section id="sec2" class="content-section py-20">
+            <h2 class="text-3xl md:text-4xl font-bold mb-10 border-b border-white/10 pb-6">1. Vulkanismus</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="glass p-8 rounded-3xl hover:bg-white/5 transition-colors duration-300 flex flex-col">
+                    <h4 class="text-orange-400 font-bold mb-4 uppercase tracking-wider text-sm flex-shrink-0">1.1 Definition Vulkane </h4>
+                    <img src="3.jpeg" alt="Aufbau eines Vulkans" class="w-full h-48 object-cover rounded-2xl mb-6 shadow-xl border border-white/5">
+                    <p class="text-zinc-400 text-sm md:text-base leading-relaxed flex-grow">Ein Vulkan ist eine Öffnung in der Erdkruste, durch die Magma (nach dem Austreten Lava genannt), Gase und Asche aus dem Erdinneren an die Oberfläche gelangen.</p>
                 </div>
-                <div class="glass p-8 rounded-3xl">
-                    <h4 class="text-orange-500 font-bold mb-3 uppercase tracking-wider text-sm">1.2 Enstehung von Vulkanen </h4>
-                    <img src="vulkan-dossier112.png" alt="Aufbau eines Vulkans"
-     class="w-full h-48 object-cover rounded-xl mb-4 shadow-lg">
-                    <p class="text-stone-400">Durch Öffnungen in der Erdkruste gelangt Magma aus dem Erdinneren an die Oberfläche und verursacht dort eine Erhebung. <br> Dies kann durch Kollision oder Auseinanderdriften von Erdplatten oder an Hotspots geschehen.     </p>
+                <div class="glass p-8 rounded-3xl hover:bg-white/5 transition-colors duration-300 flex flex-col">
+                    <h4 class="text-orange-400 font-bold mb-4 uppercase tracking-wider text-sm flex-shrink-0">1.2 Enstehung von Vulkanen </h4>
+                    <img src="vulkan-dossier112.png" alt="Aufbau eines Vulkans" class="w-full h-48 object-cover rounded-2xl mb-6 shadow-xl border border-white/5">
+                    <p class="text-zinc-400 text-sm md:text-base leading-relaxed flex-grow">Durch Öffnungen in der Erdkruste gelangt Magma aus dem Erdinneren an die Oberfläche und verursacht dort eine Erhebung. <br><br> Dies kann durch Kollision oder Auseinanderdriften von Erdplatten oder an Hotspots geschehen.</p>
                 </div>
-                <div class="glass p-8 rounded-3xl">
-                    <h4 class="text-orange-500 font-bold mb-3 uppercase tracking-wider text-sm">1.3 Grundaufbau eines Vulkans</h4>
-
-<img src="vulkan-aufbau.png" alt="Aufbau eines Vulkans"
-     class="w-full h-48 object-cover rounded-xl mb-4 shadow-lg">
-
-                    <p class="text-stone-400">Im unterem Erdmantel schmilzt Gestein und das Magma steigt bei hohem Druck auf. <br> Unter dem Vulkan im oberen  Erdmantel ensteht eine Magmakammer. <br> Der Vulkan besteht aus Lava und Ascheschichten, die bei vorigen Ausbrüchen enstanden. <br> In der Mitte des Vulkans gibt es einen Hauptkrater, in dem Lava beim Ausbruch hochsteigt und oft haben Vulkane ein paar Nebenkrater. </p>
+                <div class="glass p-8 rounded-3xl hover:bg-white/5 transition-colors duration-300 flex flex-col lg:col-span-1 md:col-span-2">
+                    <h4 class="text-orange-400 font-bold mb-4 uppercase tracking-wider text-sm flex-shrink-0">1.3 Grundaufbau eines Vulkans</h4>
+                    <img src="vulkan-aufbau.png" alt="Aufbau eines Vulkans" class="w-full h-48 object-cover rounded-2xl mb-6 shadow-xl border border-white/5">
+                    <p class="text-zinc-400 text-sm md:text-base leading-relaxed flex-grow">Im unterem Erdmantel schmilzt Gestein und das Magma steigt bei hohem Druck auf. <br><br> Unter dem Vulkan im oberen Erdmantel ensteht eine Magmakammer. <br><br> Der Vulkan besteht aus Lava und Ascheschichten, die bei vorigen Ausbrüchen enstanden. <br><br> In der Mitte des Vulkans gibt es einen Hauptkrater, in dem Lava beim Ausbruch hochsteigt und oft haben Vulkane ein paar Nebenkrater.</p>
                 </div>
             </div>
         </section>
 
-        <section id="sec3" class="content-section py-24">
-            <h2 class="text-4xl font-bold mb-12 border-b border-orange-900/30 pb-4">2. Vulkanarten</h2>
-            <div class="space-y-12 read-text">
-                <div class="flex flex-col md:flex-row gap-10">
-                    <div class="w-full md:w-1/2">
-                        <h4 class="text-2xl font-bold text-white mb-4">2.1 Unterschiede der Vulkanarten  </h4>
-                        <p class="text-stone-400 mb-4" class="term-highlight">Es gibt verschiedene Arten von Vulkanen: Schicht, Schild, Schlackekegel, Caldera, Spalte </p>
-                  
-                    </div>
-                        <p class="text-stone-400 mb-4"><span class="term-highlight"> • Schichtvulkane </span>: kegelförmig, steile Hänge, zähflüssige Lava, explosiver Ausbruch <img  style="width: 150px; height: 100px;"src="1.png" alt="Aufbau eines Vulkanss class="w-full h-48 object-cover rounded-xl mb-4 shadow-lg">
-                             <br> <span class="term-highlight"> • Schildvulkane </span>: schildförmig, flache Hänge, dünnflüssige Lava, Lavafontäne, lange Eruption <img  style="width: 150px; height: 100px;"src="2.png" alt="Aufbau eines Vulkanss class="w-full h-48 object-cover rounded-xl mb-4 shadow-lg">
-                              <br> <span class="term-highlight"> • Schlackekegel </span>: kegelförmig, zähflüssige Lava, explosiver Ausbruch <img  style="width: 150px; height: 100px;"src="Schlackekegel.png" alt="Aufbau eines Vulkanss class="w-full h-48 object-cover rounded-xl mb-4 shadow-lg">
-                              <br>  <span class="term-highlight">
-                                 • Caldera </span>: trichterförmig, zähflüssige Lava, explosiver Ausbruch, Krater stürzt nach Ausbruch ein <img  style="width: 150px; height: 100px;"src="Caldera.png" alt="Aufbau eines Vulkanss class="w-full h-48 object-cover rounded-xl mb-4 shadow-lg">
-                                  <br> <span class="term-highlight"> • Spalte </span>: Spalte, flache Hänge, dünnflüssige Lava, Lavafontäne <img  style="width: 150px; height: 100px;"src="Spalte.png" alt="Aufbau eines Vulkanss class="w-full h-48 object-cover rounded-xl mb-4 shadow-lg">
-                    <div class="w-full md:w-1/2">
+        <section id="sec3" class="content-section py-20">
+            <h2 class="text-3xl md:text-4xl font-bold mb-10 border-b border-white/10 pb-6">2. Vulkanarten</h2>
+            <div class="space-y-12">
+                <div class="glass p-8 md:p-10 rounded-3xl">
+                    <h4 class="text-2xl font-bold text-white mb-6">2.1 Unterschiede der Vulkanarten</h4>
+                    <p class="text-zinc-400 mb-8 text-lg"><span class="term-highlight">Es gibt verschiedene Arten von Vulkanen: Schicht, Schild, Schlackekegel, Caldera, Spalte</span></p>
+              
+                    <div class="space-y-8 text-zinc-300 text-sm md:text-base">
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-2xl bg-white/5">
+                            <img style="width: 150px; height: 100px;" src="1.png" alt="Aufbau eines Vulkans" class="object-cover rounded-xl shadow-lg border border-white/10 flex-shrink-0">
+                            <p><span class="term-highlight">• Schichtvulkane</span>: kegelförmig, steile Hänge, zähflüssige Lava, explosiver Ausbruch</p>
+                        </div>
                         
-
-                        </ul>
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-2xl bg-white/5">
+                            <img style="width: 150px; height: 100px;" src="2.png" alt="Aufbau eines Vulkans" class="object-cover rounded-xl shadow-lg border border-white/10 flex-shrink-0">
+                            <p><span class="term-highlight">• Schildvulkane</span>: schildförmig, flache Hänge, dünnflüssige Lava, Lavafontäne, lange Eruption</p>
+                        </div>
+                        
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-2xl bg-white/5">
+                            <img style="width: 150px; height: 100px;" src="Schlackekegel.png" alt="Aufbau eines Vulkans" class="object-cover rounded-xl shadow-lg border border-white/10 flex-shrink-0">
+                            <p><span class="term-highlight">• Schlackekegel</span>: kegelförmig, zähflüssige Lava, explosiver Ausbruch</p>
+                        </div>
+                        
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-2xl bg-white/5">
+                            <img style="width: 150px; height: 100px;" src="Caldera.png" alt="Aufbau eines Vulkans" class="object-cover rounded-xl shadow-lg border border-white/10 flex-shrink-0">
+                            <p><span class="term-highlight">• Caldera</span>: trichterförmig, zähflüssige Lava, explosiver Ausbruch, Krater stürzt nach Ausbruch ein</p>
+                        </div>
+                        
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-2xl bg-white/5">
+                            <img style="width: 150px; height: 100px;" src="Spalte.png" alt="Aufbau eines Vulkans" class="object-cover rounded-xl shadow-lg border border-white/10 flex-shrink-0">
+                            <p><span class="term-highlight">• Spalte</span>: Spalte, flache Hänge, dünnflüssige Lava, Lavafontäne</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="sec4" class="content-section py-24">
-            <h2 class="text-4xl font-bold mb-12 border-b border-orange-900/30 pb-4"> 
-                3. Schicht & Schildvulkane </h2>
-            <div class="grid md:grid-cols-2 gap-8 read-text">
-                <div class="bg-red-950/10 p-8 rounded-[2rem] border border-red-900/20">
-                    <h4 class="font-bold text-red-500 mb-4 uppercase">3.1 Schichtvulkane</h4>
-                    <img src="schichtvulkane.png" alt="Aufbau eines Vulkans" class="w-full h-48 object-cover rounded-xl mb-2 shadow-lg">
-                <p class="text-stone-400 text-sm">Ähnlich wie beim Schildvulkan entsteht er durch Austreten Magmas aus dem oberen Erdmantel, doch anders als beim Schildvulkan ist die Lava dickflüssig. <br>Dadurch fließt die Lava langsamer und hat mehr Zeit, zu erkalten. Dadurch entsteht ein steiler Hang von oft bis zu 40 km hoch. Vorkommen des Schildvulkans ist gleich dem Vorkommen des Schichtvulkans. <br></p> </div>
-                <div class="bg-blue-950/10 p-8 rounded-[2rem] border border-blue-900/20">
-                    <h4 class="font-bold text-blue-500 mb-4 uppercase">3.2 Schildvulkane</h4>
-                    <img src="Schildvulkane.png" alt="Aufbau eines Vulkans" class="w-full h-48 object-cover rounded-xl mb-4 shadow-lg">
-                    <p class="text-stone-400 text-sm">Schildvulkane entstehen durch schnell fließende Lava, die aus dem oberen Erdmantel austritt, durch die ein ca. 5 ° steiler Hang entsteht. <br> Schildvulkane werden auch Rote Vulkane genannt, denn sie fördern gigantische Massen dünnflüssiger Lava, die explosiv austritt. Die meisten Schildvulkane liegen über Lithosphärenplatten.
+        <section id="sec4" class="content-section py-20">
+            <h2 class="text-3xl md:text-4xl font-bold mb-10 border-b border-white/10 pb-6">3. Schicht & Schildvulkane</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-gradient-to-br from-red-950/40 to-red-900/10 p-8 md:p-10 rounded-3xl border border-red-900/30 shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-red-500/10 blur-[50px] rounded-full"></div>
+                    <h4 class="font-bold text-red-400 mb-6 uppercase tracking-wider">3.1 Schichtvulkane</h4>
+                    <img src="schichtvulkane.png" alt="Aufbau eines Vulkans" class="w-full h-56 object-cover rounded-2xl mb-6 shadow-lg border border-red-900/50">
+                    <p class="text-zinc-300 text-sm md:text-base leading-relaxed">Ähnlich wie beim Schildvulkan entsteht er durch Austreten Magmas aus dem oberen Erdmantel, doch anders als beim Schildvulkan ist die Lava dickflüssig. <br><br>Dadurch fließt die Lava langsamer und hat mehr Zeit, zu erkalten. Dadurch entsteht ein steiler Hang von oft bis zu 40 km hoch. Vorkommen des Schildvulkans ist gleich dem Vorkommen des Schichtvulkans. <br></p> 
+                </div>
+                
+                <div class="bg-gradient-to-br from-blue-950/40 to-blue-900/10 p-8 md:p-10 rounded-3xl border border-blue-900/30 shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-[50px] rounded-full"></div>
+                    <h4 class="font-bold text-blue-400 mb-6 uppercase tracking-wider">3.2 Schildvulkane</h4>
+                    <img src="Schildvulkane.png" alt="Aufbau eines Vulkans" class="w-full h-56 object-cover rounded-2xl mb-6 shadow-lg border border-blue-900/50">
+                    <p class="text-zinc-300 text-sm md:text-base leading-relaxed">Schildvulkane entstehen durch schnell fließende Lava, die aus dem oberen Erdmantel austritt, durch die ein ca. 5 ° steiler Hang entsteht. <br><br> Schildvulkane werden auch Rote Vulkane genannt, denn sie fördern gigantische Massen dünnflüssiger Lava, die explosiv austritt. Die meisten Schildvulkane liegen über Lithosphärenplatten.</p>
                 </div>
             </div>
         </section>
-          <section id="sec3" class="content-section py-24">
-            <h2 class="text-4xl font-bold mb-12 border-b border-orange-900/30 pb-4">4. Auswirkung</h2>
-            <div class="space-y-12 read-text">
-                <div class="flex flex-col md:flex-row gap-10">
-                    <div class="w-full md:w-1/2">
-                        <h4 class="text-2xl font-bold text-white mb-4">4.1 Auswirkung auf Menschen  </h4>
-                        <p class="text-stone-400 mb-4" class="term-highlight"> Nachteile: Durch giftige Gase entsteht Luftverschmutzung. <br> Es können auch Erdbeben, Erdrutsche und Tsunamis ausgelöst werden. <br>Ein Vulkanausbruch tötet die Vegetation, Tierarten und Menschen. <br>Der Flugverkehr kann eingeschränkt werden. <br><br>Vorteile: Es entstehen sehr fruchtbare Böden. <br> Die geothermische Energie kann genutzt werden. <br> Es gelangen wertvolle Rohstoffe an die Oberfläche. <br> Durch den Vulkan selbst sowie damit im Zusammenhang stehende heiße Thermalquellen wird der Tourismus gefördert. <brV></brV>
-                        <br>Außerdem wird durch Vulkane neue Landmasse gebildet, beispielsweise neue Inseln und erweiterte Küstenlinien  (z.B. Hawaii ) </p>
-                    </section>   
-                    </div>
+
+        <section id="sec5" class="content-section py-20">
+            <h2 class="text-3xl md:text-4xl font-bold mb-10 border-b border-white/10 pb-6">4. Auswirkung</h2>
+            <div class="glass p-8 md:p-10 rounded-3xl">
+                <h4 class="text-2xl font-bold text-white mb-8">4.1 Auswirkung auf Menschen</h4>
+                <div class="text-zinc-300 space-y-6 text-sm md:text-base leading-relaxed">
+                    <p class="term-highlight text-lg border-b border-white/5 pb-2">Nachteile:</p>
+                    <ul class="list-disc list-inside space-y-2 text-zinc-400 ml-2">
+                        <li>Durch giftige Gase entsteht Luftverschmutzung.</li>
+                        <li>Es können auch Erdbeben, Erdrutsche und Tsunamis ausgelöst werden.</li>
+                        <li>Ein Vulkanausbruch tötet die Vegetation, Tierarten und Menschen.</li>
+                        <li>Der Flugverkehr kann eingeschränkt werden.</li>
+                    </ul>
+                    
+                    <p class="term-highlight text-lg border-b border-white/5 pb-2 pt-4">Vorteile:</p>
+                    <ul class="list-disc list-inside space-y-2 text-zinc-400 ml-2">
+                        <li>Es entstehen sehr fruchtbare Böden.</li>
+                        <li>Die geothermische Energie kann genutzt werden.</li>
+                        <li>Es gelangen wertvolle Rohstoffe an die Oberfläche.</li>
+                        <li>Durch den Vulkan selbst sowie damit im Zusammenhang stehende heiße Thermalquellen wird der Tourismus gefördert.</li>
+                    </ul>
+                    
+                    <p class="pt-4 text-zinc-400">
+                        Außerdem wird durch Vulkane neue Landmasse gebildet, beispielsweise neue Inseln und erweiterte Küstenlinien (z.B. Hawaii)
+                    </p>
+                </div>
+            </div>
+        </section>   
                    
-        <section id="sec5" class="content-section py-32">
-            <div id="quiz-container" class="glass p-12 md:p-20 rounded-[4rem] shadow-2xl">
-                <h2 class="text-4xl font-black mb-4">LEISTUNGSKONTROLLE</h2>
-                <p class="mb-12 text-stone-500">Überprüfung der Lerninhalte zum Thema Vulkanismus.</p>
+        <section id="sec6" class="content-section py-24">
+            <div id="quiz-container" class="bg-gradient-to-b from-zinc-900 to-black p-10 md:p-16 rounded-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/5 relative overflow-hidden">
+                <div class="absolute -top-40 -right-40 w-96 h-96 bg-orange-600/10 blur-[100px] rounded-full pointer-events-none"></div>
+                
+                <h2 class="text-3xl md:text-4xl font-black mb-4 tracking-tight">LEISTUNGSKONTROLLE</h2>
+                <p class="mb-12 text-zinc-400">Überprüfung der Lerninhalte zum Thema Vulkanismus.</p>
                 
                 <div id="quiz-body">
-                    <div id="q-text" class="text-3xl font-bold mb-10 leading-tight">Möchten Sie das Wissensquiz starten?</div>
+                    <div id="q-text" class="text-2xl md:text-3xl font-bold mb-10 leading-tight">Möchten Sie das Wissensquiz starten?</div>
                     <div id="q-options" class="grid gap-4">
-                        <button onclick="startQuiz()" class="bg-orange-700 text-white p-6 rounded-2xl font-bold text-xl active:scale-95 transition">Test starten</button>
+                        <button onclick="startQuiz()" class="bg-gradient-to-r from-orange-600 to-orange-500 text-white py-5 px-8 rounded-2xl font-bold text-lg md:text-xl active:scale-95 transition-all shadow-lg hover:shadow-orange-500/25">Test starten</button>
                     </div>
                 </div>
                 <div id="q-progress-container" class="mt-12 hidden">
                     <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
-                        <div id="q-progress-bar" class="bg-orange-600 h-full w-0 transition-all duration-700"></div>
+                        <div id="q-progress-bar" class="bg-gradient-to-r from-orange-600 to-orange-400 h-full w-0 transition-all duration-700 ease-out"></div>
                     </div>
                 </div>
             </div>
         </section>
-         <a href="Programmieren.html" class="mb-12 text-stone-500" style="text-align: center;">Überprüfung der Lerninhalte zum Thema Vulkanismus.</a>
-   <a href="https://www.youtube.com/watch?v=Um5XhU5gdlw">Video geothermie</a> <br>
-                    <a href="https://www.youtube.com/watch?v=rwzDFqtkM20">Video Vulkan </a> 
+
+        <div class="content-section mt-12 flex flex-col items-center gap-4 border-t border-white/5 pt-10">
+            <a href="Programmieren.html" class="text-sm text-zinc-500 hover:text-orange-400 transition-colors">Überprüfung der Lerninhalte zum Thema Vulkanismus.</a>
+            <div class="flex gap-6 mt-4">
+                <a href="https://www.youtube.com/watch?v=Um5XhU5gdlw" class="flex items-center gap-2 text-sm bg-white/5 px-4 py-2 rounded-full hover:bg-white/10 transition-colors"><span class="text-red-500">▶</span> Video geothermie</a>
+                <a href="https://www.youtube.com/watch?v=rwzDFqtkM20" class="flex items-center gap-2 text-sm bg-white/5 px-4 py-2 rounded-full hover:bg-white/10 transition-colors"><span class="text-red-500">▶</span> Video Vulkan</a> 
+            </div>
+        </div>
     </main>
 
     <script>
         let isPresenting = false;
         let currentStep = -1;
         const sections = document.querySelectorAll('.content-section');
-        const synth = window.speechSynthesis;
 
         function togglePresentation() {
             if (!isPresenting) {
@@ -198,7 +288,7 @@
             document.getElementById('btnText').innerText = "Präsentation starten";
             document.getElementById('btnIcon').innerText = "▶";
             document.querySelectorAll('.pres-nav').forEach(el => el.classList.add('hidden'));
-            synth.cancel();
+            
             sections.forEach(s => s.classList.remove('active'));
             currentStep = -1;
             document.getElementById('progress-bar').style.width = '0%';
@@ -221,16 +311,21 @@
         }
 
         function runStep() {
-            synth.cancel();
-            sections.forEach((s, i) => { s.classList.toggle('active', i === currentStep); });
+            // Reparierte Logik für den Präsentationsmodus (ohne Vorlesefunktion)
+            sections.forEach((s, i) => { 
+                if(i === currentStep) {
+                    s.classList.add('active');
+                } else {
+                    s.classList.remove('active');
+                }
+            });
 
             const activeSection = sections[currentStep];
             activeSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
             
             const prog = ((currentStep + 1) / sections.length) * 100;
             document.getElementById('progress-bar').style.width = prog + '%';
-
- 
+        }
 
         // Quiz-System
         const quizData = [
@@ -245,7 +340,8 @@
         let score = 0;
 
         function startQuiz() {
-            qIdx = 0; score = 0;
+            qIdx = 0; 
+            score = 0;
             document.getElementById('q-progress-container').classList.remove('hidden');
             showQuestion();
         }
@@ -258,12 +354,12 @@
 
             let optionsHtml = '';
             data.o.forEach((opt, i) => {
-                optionsHtml += `<button onclick="answer(${i})" class="w-full text-left p-6 border border-white/10 rounded-2xl font-bold text-lg hover:bg-orange-800 hover:text-white transition active:scale-95 shadow-lg">${opt}</button>`;
+                optionsHtml += `<button onclick="answer(${i})" class="w-full text-left p-5 md:p-6 border border-white/10 rounded-2xl font-bold text-base md:text-lg hover:bg-orange-600 hover:border-orange-500 hover:text-white transition-all active:scale-95 shadow-lg bg-white/5">${opt}</button>`;
             });
 
             body.innerHTML = `
-                <div class="text-xs font-bold text-stone-500 mb-4 uppercase tracking-[0.3em]">Frage ${qIdx + 1} / ${quizData.length}</div>
-                <div class="text-2xl font-bold mb-10 leading-snug">${data.q}</div>
+                <div class="text-xs font-bold text-orange-500 mb-4 uppercase tracking-[0.3em]">Frage ${qIdx + 1} / ${quizData.length}</div>
+                <div class="text-xl md:text-2xl font-bold mb-8 leading-snug text-white">${data.q}</div>
                 <div class="grid gap-4">${optionsHtml}</div>
             `;
         }
@@ -281,17 +377,16 @@
             const perc = Math.round((score / quizData.length) * 100);
             
             body.innerHTML = `
-                <div class="text-center py-10">
+                <div class="text-center py-8 md:py-10">
                     <div class="text-6xl mb-8">📊</div>
-                    <div class="text-4xl font-black mb-4 uppercase tracking-tighter">Ergebnis: ${perc}%</div>
-                    <p class="text-xl text-stone-400 mb-12">Sie haben ${score} von ${quizData.length} Fragen korrekt beantwortet.</p>
-                    <button onclick="location.reload()" class="bg-white text-black px-12 py-5 rounded-full font-bold uppercase tracking-widest hover:bg-orange-600 hover:text-white transition shadow-2xl">Abschließen</button>
+                    <div class="text-3xl md:text-4xl font-black mb-4 uppercase tracking-tighter text-white">Ergebnis: ${perc}%</div>
+                    <p class="text-lg md:text-xl text-zinc-400 mb-10">Sie haben ${score} von ${quizData.length} Fragen korrekt beantwortet.</p>
+                    <button onclick="location.reload()" class="bg-white text-black px-10 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-orange-500 hover:text-white transition-all shadow-[0_10px_30px_rgba(255,255,255,0.1)]">Abschließen</button>
                 </div>
             `;
         }
-
-        // Sprach-Engine Initialisierung für iPad
-     
     </script>
 </body>
 </html>
+
+```
